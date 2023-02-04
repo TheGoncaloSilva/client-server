@@ -3,7 +3,7 @@
 #include <string>
 
 // headers of local libraries
-#include "include/server.h"
+#include "server.h"
 
 // Namespaces in use
 using namespace std;
@@ -13,7 +13,7 @@ using namespace boost::posix_time;
 // Macros in use
 constexpr int32_t PORT = 8000;
 
-int main()
+int main(int argc, char* argv[])
 {
     io_service service;
     ip::tcp::endpoint endpoint(ip::tcp::v4(), PORT);

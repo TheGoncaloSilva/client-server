@@ -3,7 +3,7 @@
 #include <string>
 
 // headers of local libraries
-#include "include/client.h"
+#include "client.h"
 
 // Namespaces in use
 using namespace std;
@@ -13,7 +13,8 @@ using namespace boost::asio::ip;
 // Macros declarations
 constexpr int PORT = 8000; 
 
-int main() {
+int main(int argc, char* argv[]) 
+{
     io_service ios;
 
     // Connect to the server

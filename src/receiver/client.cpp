@@ -2,7 +2,7 @@
 #include <iostream>
 
 // headers of local libraries
-#include "include/client.h"
+#include "client.h"
 
 // Namespaces in use
 using namespace std;

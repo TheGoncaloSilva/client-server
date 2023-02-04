@@ -1,7 +1,7 @@
 // header of standard or provided libraries
 #include <stdint.h>
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include <boost/bind/bind.hpp>
 
 // Namespaces in use
 using namespace std;

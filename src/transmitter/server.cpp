@@ -2,7 +2,7 @@
 #include <iostream>
 
 // headers of local libraries
-#include "include/server.h"
+#include "server.h"
 
 // Namespaces in use
 using namespace std;
@@ -32,7 +32,7 @@ namespace server{
             {
                 cout << "Accepted client: " << socket->remote_endpoint().address().to_string() << endl;
                 shared_ptr<array<char, 128>> buf(new array<char, 128>);
-                async_read(*socket, buffer(*buf), boost::bind(handle_request, _1, _2, socket));
+                async_read(*socket, buffer(*buf), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket));
                 start_accept(acceptor, socket);
             }
         });

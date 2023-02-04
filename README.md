@@ -30,7 +30,7 @@ On Ubuntu you need the following packages installed:
 _build-essential_, _cmake_, _doxygen_, and _git_.
 
 ```
-sudo apt install build-essential cmake doxygen git
+sudo apt install build-essential cmake doxygen git libboost-all-dev
 ```
 
 In other Linux distributions you need equivalent packages installed.

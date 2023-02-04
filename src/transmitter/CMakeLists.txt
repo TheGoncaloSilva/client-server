@@ -1,20 +1,31 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(server)
+project(server VERSION 1.0)
 
-#set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+if ( CMAKE_COMPILER_IS_GNUCC )
+	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ggdb -Wall -D_FILE_OFFSET_BITS=64 -Werror -fmax-errors=1")
+endif()
+
+set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_ROOT_DIR}/client-server/lib")
 
 execute_process ( COMMAND dirname ${CMAKE_SOURCE_DIR} 
             OUTPUT_VARIABLE PROJECT_ROOT_DIR
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_ROOT_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_ROOT_DIR}/client-server/lib)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_DIR}/client-server/bin)
+
+# Include CMake variables in source code
+#configure_file(file.h.in file.h)
 
 # Set up include directories
+include_directories(${PROJECT_ROOT_DIR}/client-server/include)
+
 include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories(
@@ -24,7 +35,7 @@ include_directories(
 
 # Do this with a foreach in shared
 set(SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/shared/communication.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared/communication.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_server.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp
 )
@@ -33,8 +44,8 @@ set(SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Find Boost library
-#find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 #find_package(Boost REQUIRED system thread)
 
 # Link the Boost libraries to the server executable
-target_link_libraries(${PROJECT_NAME} ${PROJECT_ROOT_DIR}/lib/boost_1_81_0)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
