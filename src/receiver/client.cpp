@@ -25,7 +25,6 @@ Client::~Client()
     disconnect_client();
 }
 
-// Should be static
 bool Client::connect_client()
 {
     cout << "Connecting" << endl;

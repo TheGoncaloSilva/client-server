@@ -1,3 +1,8 @@
+// Directive similar to include guards, but simpler. It signals the 
+// preprocessor to include this source file only once in compilation.
+// Design to fight circular imports and other issues
+#pragma once
+
 // header of standard or provided libraries
 #include <stdint.h>
 #include <boost/asio.hpp>
@@ -13,7 +18,7 @@ class Client
 
     public:
         Client(const string ip, const uint16_t port) noexcept;
-        
+
         ~Client();
 
         void client_life();
@@ -26,7 +31,7 @@ class Client
 
         void disconnect_client();
 
-        void handle_response(const boost::system::error_code& ec,
+        void static handle_response(const boost::system::error_code& ec,
                         size_t bytes_transferred,
                         shared_ptr<vector<char>> buffer);
 

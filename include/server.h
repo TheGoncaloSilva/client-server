@@ -1,3 +1,8 @@
+// Directive similar to include guards, but simpler. It signals the 
+// preprocessor to include this source file only once in compilation.
+// Design to fight circular imports and other issues
+#pragma once
+
 // header of standard or provided libraries
 #include <stdint.h>
 #include <boost/asio.hpp>
@@ -8,12 +13,27 @@ using namespace std;
 using namespace boost::asio;
 using namespace boost::posix_time;
 
-namespace server{
+class Server{
+    public:
+        Server(const string ip, const uint16_t port) noexcept;
+        //~Server();
 
-    void handle_request(const boost::system::error_code& ec, 
-                    size_t bytes_transferred, 
-                    shared_ptr<boost::asio::ip::tcp::socket> socket);
+        bool create_server();
+        void terminate_server();
 
-    void start_accept(shared_ptr<boost::asio::ip::tcp::acceptor> acceptor, 
-                    shared_ptr<boost::asio::ip::tcp::socket> socket);
-}
+        const string ip;
+        const uint16_t port;
+
+    private:
+
+        void static handle_request(const boost::system::error_code& ec, 
+                        size_t bytes_transferred,
+                        shared_ptr<ip::tcp::socket> socket);
+
+        void static start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip::tcp::socket> socket);
+
+        io_service ioService;
+        ip::tcp::endpoint sAddress;
+        shared_ptr<ip::tcp::acceptor> acceptor;
+        shared_ptr<ip::tcp::socket> socket;
+};
