@@ -13,6 +13,7 @@ using namespace boost::asio::ip;
 // Macros declarations
 constexpr int PORT = 1001; 
 
+/* Default constructor*/
 Server::Server(const string ip, const uint16_t port) noexcept
     : ip{ip},
       port{port},
@@ -21,6 +22,12 @@ Server::Server(const string ip, const uint16_t port) noexcept
       socket(new ip::tcp::socket(ioService))
 {
     cout << "Initiating server" << endl;
+}
+
+/* Default destructor */
+Server::~Server() noexcept
+{
+    terminate_server();
 }
 
 bool Server::create_server()
@@ -47,7 +54,7 @@ void Server::handle_request(const boost::system::error_code& ec, size_t bytes_tr
     }
     else
     {
-        cout << "Error occurred: " << ec.message() << endl;
+        cout << "Error occurred: " << ec.value() << ", Message: " << ec.message() << endl;
     }
 }
 
@@ -57,8 +64,8 @@ void Server::start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip:
         if (!ec)
         {
             cout << "Accepted client: " << socket->remote_endpoint().address().to_string() << endl;
-            shared_ptr<array<char, 128>> buf(new array<char, 128>);
-            async_read(*socket, buffer(*buf), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket));
+            shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
+            async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket));
         }
         else
         {

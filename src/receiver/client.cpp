@@ -20,7 +20,7 @@ Client::Client(const string ip, const uint16_t port) noexcept
 }
 
 /* Default destructor */
-Client::~Client()
+Client::~Client() noexcept
 {
     disconnect_client();
 }
@@ -59,7 +59,9 @@ void Client::client_life()
 
     // Send a request to the server
     string request = "Hello Server!";
-    write(mSocket, buffer(request));
+    if(write(mSocket, buffer(request, request.size())) != request.size()){
+        cout << "The bytes weren't sent to the server" << endl;
+    }
 
     // Receive the response from the server
     auto buffer = make_shared<vector<char>>(1024);

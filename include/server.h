@@ -16,7 +16,7 @@ using namespace boost::posix_time;
 class Server{
     public:
         Server(const string ip, const uint16_t port) noexcept;
-        //~Server();
+        ~Server() noexcept;
 
         bool create_server();
         void terminate_server();

@@ -19,7 +19,7 @@ class Client
     public:
         Client(const string ip, const uint16_t port) noexcept;
 
-        ~Client();
+        ~Client() noexcept;
 
         void client_life();
 
