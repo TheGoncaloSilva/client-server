@@ -21,17 +21,19 @@ Server::Server(const string ip, const uint16_t port) noexcept
       acceptor(new ip::tcp::acceptor(ioService, sAddress)),
       socket(new ip::tcp::socket(ioService))
 {
-    cout << "Initiating server" << endl;
+    BOOST_LOG_TRIVIAL(trace) << "Creating the server class";
 }
 
 /* Default destructor */
 Server::~Server() noexcept
 {
+    BOOST_LOG_TRIVIAL(trace) << "Destructing the server class";
     terminate_server();
 }
 
 bool Server::create_server()
 {
+    BOOST_LOG_TRIVIAL(info) << "Setting up server with address " + ip + ":" + to_string(port);
     start_accept(acceptor, socket);
 
     ioService.run();
@@ -40,29 +42,24 @@ bool Server::create_server()
 
 void Server::terminate_server()
 {
+    BOOST_LOG_TRIVIAL(info) << "Terminating server";
     ioService.stop();
 }
 
-void Server::handle_request(const boost::system::error_code& ec, size_t bytes_transferred, shared_ptr<ip::tcp::socket> socket)
+void Server::handle_request(const boost::system::error_code& ec, size_t bytes_transferred, shared_ptr<ip::tcp::socket> socket, shared_ptr<array<char, 1024>> buf)
 {
-    cout << "received: " << bytes_transferred << endl;
     if (!ec)
     {
-        cout << "Received data from client: " << socket->remote_endpoint().address().to_string() << endl;
+        BOOST_LOG_TRIVIAL(info) << "Received from client " << socket->remote_endpoint().address().to_string() << ": " << buf->data();
 
         string response = "Hello from server";
-        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){
-            cout << "sent: " << bytes_transferred << endl;
-            if(!ec)
-                cout << "sucess sending" << endl;
-            else
-                cerr << "error sending" <<  endl;
-
-        });
+        BOOST_LOG_TRIVIAL(info) << "Sending to client: " << response;
+        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){});
     }
     else
     {
-        cout << "Error occurred: " << ec.value() << ", Message: " << ec.message() << endl;
+        BOOST_LOG_TRIVIAL(error) << "Problem receiving data from client " << socket->remote_endpoint().address().to_string()
+                                 << "; Reason: " << ec.value() << ", Message: " << ec.message();
     }
 }
 
@@ -71,13 +68,13 @@ void Server::start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip:
     acceptor->async_accept(*socket, [acceptor, socket](const boost::system::error_code& ec){
         if (!ec)
         {
-            cout << "Accepted client: " << socket->remote_endpoint().address().to_string() << endl;
+            BOOST_LOG_TRIVIAL(info) << "Accepted client from " << socket->remote_endpoint().address().to_string() << endl;
             shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
-            async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket));
+            async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket, buf));
         }
         else
         {
-            cout << "Client not accepted because: " << ec.message() << endl;
+            BOOST_LOG_TRIVIAL(error) << "Client not accepted because: " << ec.message() << endl;
         }
     });
 }

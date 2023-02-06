@@ -25,6 +25,7 @@ namespace logger
             logging::register_simple_formatter_factory<logging::trivial::severity_level, char>("Severity");
 
             logging::add_file_log(
+                keywords::severity = logging::trivial::debug,
                 keywords::file_name = folderName + logFileName,
                 keywords::auto_flush = true,
                 keywords::format = "[%TimeStamp%] [%ThreadID%] [%Severity%] [%ProcessID%] [%LineID%] %Message%"
@@ -32,13 +33,15 @@ namespace logger
 
             logging::add_console_log(
                 std::cout, 
-                keywords::format = "[%Severity%]: %Message%")
+                keywords::format = "[%Severity%]: %Message%"),
+                keywords::severity = logging::trivial::info
             ;
 
+            /*
             logging::core::get()->set_filter
             (
                 logging::trivial::severity >= logging::trivial::info
-            );
+            );*/
 
             logging::add_common_attributes();
         }catch (const boost::exception& ex){

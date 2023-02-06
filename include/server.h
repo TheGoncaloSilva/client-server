@@ -31,7 +31,8 @@ class Server{
 
         void static handle_request(const boost::system::error_code& ec, 
                         size_t bytes_transferred,
-                        shared_ptr<ip::tcp::socket> socket);
+                        shared_ptr<ip::tcp::socket> socket,
+                        shared_ptr<array<char, 1024>> buf);
 
         void static start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip::tcp::socket> socket);
 

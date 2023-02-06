@@ -88,10 +88,7 @@ void Client::handle_response(const boost::system::error_code& ec,
                     shared_ptr<vector<char>> buffer)
 {
     if (!ec) {
-        BOOST_LOG_TRIVIAL(info) << "Received from server: " << buffer;
-        cout << "Response received: ";
-        cout.write(buffer->data(), bytes_transferred);
-        cout << endl;
+        BOOST_LOG_TRIVIAL(debug) << "Received from server: " << buffer->data();
     } else {
         BOOST_LOG_TRIVIAL(info) << "Problem receiving data from server: " << ec.message();
     }
