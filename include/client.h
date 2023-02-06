@@ -6,6 +6,8 @@
 // header of standard or provided libraries
 #include <stdint.h>
 #include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/bind/bind.hpp>
 #include <string>
 
 // headers of local libraries
@@ -24,7 +26,7 @@ class Client
 
         ~Client() noexcept;
 
-        void client_life();
+        void client_life(uint8_t timerSeconds);
 
         const string ip;
         const uint16_t port;
@@ -33,6 +35,8 @@ class Client
         bool connect_client();
 
         void disconnect_client();
+
+        void contact_server();
 
         void static handle_response(const boost::system::error_code& ec,
                         size_t bytes_transferred,

@@ -63,3 +63,5 @@ Boost installation guide [here](https://www.boost.org/doc/libs/1_66_0/more/getti
 Open Source code example [here](https://github.com/iamazeem/TcpClientServerApp)
 
 Logging guide available [here](https://www.sentinelone.com/blog/getting-started-quickly-cplusplus-logging/)
+
+Asynchronous timer [here](https://www.bogotobogo.com/cplusplus/Boost/boost_AsynchIO_asio_tcpip_socket_server_client_timer_A.php)

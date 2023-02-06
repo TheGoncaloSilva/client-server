@@ -1,5 +1,8 @@
 // header of standard or provided libraries
 #include <iostream>
+#include <future>
+#include <chrono>
+#include <thread>
 
 // headers of local libraries
 #include "client.h"
@@ -56,13 +59,28 @@ void Client::disconnect_client(){
     }
 }
 
-void Client::client_life()
+void Client::client_life(uint8_t timerSeconds)
 {
     if(!connect_client()){
         BOOST_LOG_TRIVIAL(debug) << "Problem connecting to server. Client terminating";
         return;
     }
 
+    // Async timer, to contact the server for informatiomn
+    //deadline_timer timer(ioService, boost::posix_time::seconds(timerSeconds));
+    //timer.async_wait(boost::bind(Client::contact_server, &mSocket));
+    while (1)
+    {
+        contact_server();
+        this_thread::sleep_for(std::chrono::seconds(timerSeconds));
+        // Start the event loop
+        ioService.run();
+    }
+    
+    
+}
+
+void Client::contact_server(){
     // Send a request to the server
     string request = "Hello Server!";
     BOOST_LOG_TRIVIAL(info) << "Sending to server: " << request;
@@ -78,9 +96,6 @@ void Client::client_life()
                                         handle_response(ec, bytes_transferred, buffer);
                                     }
                             );
-
-    // Start the event loop
-    ioService.run();
 }
 
 void Client::handle_response(const boost::system::error_code& ec,
@@ -88,7 +103,8 @@ void Client::handle_response(const boost::system::error_code& ec,
                     shared_ptr<vector<char>> buffer)
 {
     if (!ec) {
-        BOOST_LOG_TRIVIAL(debug) << "Received from server: " << buffer->data();
+        BOOST_LOG_TRIVIAL(info) << "Received from server: " << buffer->data();
+        cout << "here" << endl;
     } else {
         BOOST_LOG_TRIVIAL(info) << "Problem receiving data from server: " << ec.message();
     }

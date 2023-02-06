@@ -12,6 +12,7 @@ using namespace std;
 // Macros declarations
 constexpr uint16_t PORT = 8000; 
 constexpr const char* LOGFOLDER = "./logs/client/";
+constexpr uint8_t TIMERSECONDS = 5;
 
 
 //int main(int argc, char* argv[]) 
@@ -25,6 +26,6 @@ int main()
         return 1;
 
     Client client{"127.0.0.1", PORT};
-    client.client_life();
+    client.client_life(TIMERSECONDS);
     return 0;
 }

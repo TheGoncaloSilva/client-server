@@ -55,6 +55,8 @@ void Server::handle_request(const boost::system::error_code& ec, size_t bytes_tr
         string response = "Hello from server";
         BOOST_LOG_TRIVIAL(info) << "Sending to client: " << response;
         async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){});
+        shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
+        async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket, buf));
     }
     else
     {

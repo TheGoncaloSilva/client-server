@@ -25,7 +25,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_ROOT_DIR}/client-server/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_ROOT_DIR}/client-server/bin)
 
 # Include CMake variables in source code
-#configure_file(file.h.in file.h)
+#configure_file(client.h client.h)
 
 # Set up include directories
 include_directories(${PROJECT_ROOT_DIR}/client-server/include)
