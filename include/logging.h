@@ -3,8 +3,6 @@
 // Design to fight circular imports and other issues
 #pragma once
 
-#define BOOST_LOG_DYN_LINK 1
-
 // header of standard or provided libraries
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -12,6 +10,8 @@
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/exception/diagnostic_information.hpp>
+
+#include <boost/log/utility/setup/console.hpp>
 
 namespace logger
 {

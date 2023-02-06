@@ -12,7 +12,7 @@ namespace keywords = boost::log::keywords;
 
 namespace logger
 {
-    bool init_logging(string folderName, string logFileName) noexcept
+    bool init_logging(const string folderName, const string logFileName) noexcept
     {
         try{
             set_folder_structure(folderName);
@@ -25,9 +25,15 @@ namespace logger
             logging::register_simple_formatter_factory<logging::trivial::severity_level, char>("Severity");
 
             logging::add_file_log(
-                keywords::file_name = logFileName,
+                keywords::file_name = folderName + logFileName,
+                keywords::auto_flush = true,
                 keywords::format = "[%TimeStamp%] [%ThreadID%] [%Severity%] [%ProcessID%] [%LineID%] %Message%"
             );
+
+            logging::add_console_log(
+                std::cout, 
+                keywords::format = "[%Severity%]: %Message%")
+            ;
 
             logging::core::get()->set_filter
             (
@@ -46,7 +52,7 @@ namespace logger
         return true;
     }
 
-    void set_folder_structure(string folder)
+    void set_folder_structure(const string folder)
     {
         try{
             if(!filesystem::exists(folder)){

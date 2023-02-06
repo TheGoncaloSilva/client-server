@@ -73,7 +73,7 @@ void Client::client_life()
     // Receive the response from the server
     auto buffer = make_shared<vector<char>>(1024);
     mSocket.async_read_some(boost::asio::buffer(buffer->data(), buffer->size()),
-                            [buffer, this](const boost::system::error_code& ec,
+                            [buffer](const boost::system::error_code& ec,
                                     size_t bytes_transferred) {
                                         handle_response(ec, bytes_transferred, buffer);
                                     }
@@ -89,9 +89,9 @@ void Client::handle_response(const boost::system::error_code& ec,
 {
     if (!ec) {
         BOOST_LOG_TRIVIAL(info) << "Received from server: " << buffer;
-        /*cout << "Response received: ";
+        cout << "Response received: ";
         cout.write(buffer->data(), bytes_transferred);
-        cout << endl;*/
+        cout << endl;
     } else {
         BOOST_LOG_TRIVIAL(info) << "Problem receiving data from server: " << ec.message();
     }

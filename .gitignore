@@ -34,3 +34,11 @@
 # Generated files
 build
 bin 
+
+# Log files
+logs
+
+# Trash IDE files
+cmake-build-debug
+.idea
+.vscode

@@ -29,8 +29,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 #	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ggdb -Wall -D_FILE_OFFSET_BITS=64 -Werror -fmax-errors=1")
 #endif()
 find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
-# add -werror
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC -fopenmp  -DBOOST_LOG_DYN_LINK    -fmax-errors=1")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC -fopenmp  -DBOOST_LOG_DYN_LINK  -Werror  -fmax-errors=1")
 set(PROJECT_LIB ${PROJECT_LIB} ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_ROOT_DIR}/client-server/lib")

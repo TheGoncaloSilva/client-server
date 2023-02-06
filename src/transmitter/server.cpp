@@ -45,12 +45,20 @@ void Server::terminate_server()
 
 void Server::handle_request(const boost::system::error_code& ec, size_t bytes_transferred, shared_ptr<ip::tcp::socket> socket)
 {
+    cout << "received: " << bytes_transferred << endl;
     if (!ec)
     {
         cout << "Received data from client: " << socket->remote_endpoint().address().to_string() << endl;
 
         string response = "Hello from server";
-        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){});
+        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){
+            cout << "sent: " << bytes_transferred << endl;
+            if(!ec)
+                cout << "sucess sending" << endl;
+            else
+                cerr << "error sending" <<  endl;
+
+        });
     }
     else
     {

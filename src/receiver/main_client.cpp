@@ -11,10 +11,11 @@ using namespace std;
 
 // Macros declarations
 constexpr uint16_t PORT = 8000; 
-constexpr const char* LOGFOLDER = "./logs/client";
+constexpr const char* LOGFOLDER = "./logs/client/";
 
 
-int main(int argc, char* argv[]) 
+//int main(int argc, char* argv[]) 
+int main() 
 {   
     // Get the name of the new log file
     time_t timeStamp = std::time(nullptr);
