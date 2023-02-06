@@ -5,9 +5,13 @@ project(server VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-if ( CMAKE_COMPILER_IS_GNUCC )
-	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ggdb -Wall -D_FILE_OFFSET_BITS=64 -Werror -fmax-errors=1")
-endif()
+#if ( CMAKE_COMPILER_IS_GNUCC )
+#	set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -ggdb -Wall -D_FILE_OFFSET_BITS=64 -Werror -fmax-errors=1")
+#endif()
+find_package(Boost COMPONENTS program_options log log_setup REQUIRED)
+# add -werror
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC -fopenmp  -DBOOST_LOG_DYN_LINK    -fmax-errors=1")
+set(PROJECT_LIB ${PROJECT_LIB} ${Boost_LOG_LIBRARY} ${Boost_LOG_SETUP_LIBRARY})
 
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -L${PROJECT_ROOT_DIR}/client-server/lib")
 
@@ -36,6 +40,7 @@ include_directories(
 # Do this with a foreach in shared
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared/communication.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared/logging.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_server.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp
 )
@@ -49,3 +54,4 @@ find_package(Boost REQUIRED COMPONENTS system)
 
 # Link the Boost libraries to the server executable
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} -Wl,--start-group  ${PROJECT_LIB} -Wl,--end-group)

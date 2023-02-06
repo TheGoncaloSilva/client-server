@@ -61,3 +61,5 @@ Tutorial on Server application confinement for security [here](https://sweet.ua.
 Boost installation guide [here](https://www.boost.org/doc/libs/1_66_0/more/getting_started/unix-variants.html)
 
 Open Source code example [here](https://github.com/iamazeem/TcpClientServerApp)
+
+Logging guide available [here](https://www.sentinelone.com/blog/getting-started-quickly-cplusplus-logging/)

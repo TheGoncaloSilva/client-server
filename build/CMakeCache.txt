@@ -20,6 +20,12 @@ Boost_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0
 //Path to a file.
 Boost_INCLUDE_DIR:PATH=/usr/include
 
+Boost_LOG_LIBRARY_RELEASE:STRING=/usr/lib/x86_64-linux-gnu/libboost_log.so.1.74.0
+
+Boost_LOG_SETUP_LIBRARY_RELEASE:STRING=/usr/lib/x86_64-linux-gnu/libboost_log_setup.so.1.74.0
+
+Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE:STRING=/usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.74.0
+
 //Boost system library (debug)
 Boost_SYSTEM_LIBRARY_DEBUG:FILEPATH=Boost_SYSTEM_LIBRARY_DEBUG-NOTFOUND
 
@@ -244,11 +250,35 @@ ClientServerApp_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 ClientServerApp_SOURCE_DIR:STATIC=/home/goncalo/repos/bic/client-server
 
+//The directory containing a CMake configuration file for boost_atomic.
+boost_atomic_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_atomic-1.74.0
+
+//The directory containing a CMake configuration file for boost_chrono.
+boost_chrono_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_chrono-1.74.0
+
+//The directory containing a CMake configuration file for boost_filesystem.
+boost_filesystem_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.74.0
+
 //The directory containing a CMake configuration file for boost_headers.
 boost_headers_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.74.0
 
+//The directory containing a CMake configuration file for boost_log.
+boost_log_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_log-1.74.0
+
+//The directory containing a CMake configuration file for boost_log_setup.
+boost_log_setup_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_log_setup-1.74.0
+
+//The directory containing a CMake configuration file for boost_program_options.
+boost_program_options_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_program_options-1.74.0
+
+//The directory containing a CMake configuration file for boost_regex.
+boost_regex_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_regex-1.74.0
+
 //The directory containing a CMake configuration file for boost_system.
 boost_system_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_system-1.74.0
+
+//The directory containing a CMake configuration file for boost_thread.
+boost_thread_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.74.0
 
 //Value Computed by CMake
 client-server_BINARY_DIR:STATIC=/home/goncalo/repos/bic/client-server/build/src/receiver
@@ -368,6 +398,10 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
+//Test CMAKE_HAVE_LIBC_PTHREAD
+CMAKE_HAVE_LIBC_PTHREAD:INTERNAL=1
+//Have include pthread.h
+CMAKE_HAVE_PTHREAD_H:INTERNAL=1
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=/home/goncalo/repos/bic/client-server
@@ -435,8 +469,24 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding Boost
 FIND_PACKAGE_MESSAGE_DETAILS_Boost:INTERNAL=[/usr/lib/x86_64-linux-gnu/cmake/Boost-1.74.0/BoostConfig.cmake][cfound components: system ][v1.74.0()]
+//ADVANCED property for variable: boost_atomic_DIR
+boost_atomic_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_chrono_DIR
+boost_chrono_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_filesystem_DIR
+boost_filesystem_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: boost_headers_DIR
 boost_headers_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_log_DIR
+boost_log_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_log_setup_DIR
+boost_log_setup_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_program_options_DIR
+boost_program_options_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_regex_DIR
+boost_regex_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: boost_system_DIR
 boost_system_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: boost_thread_DIR
+boost_thread_DIR-ADVANCED:INTERNAL=1
 

@@ -8,6 +8,9 @@
 #include <boost/asio.hpp>
 #include <string>
 
+// headers of local libraries
+#include "logging.h"
+
 // Namespaces in use
 using namespace std;
 using namespace boost::asio;

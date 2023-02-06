@@ -16,27 +16,28 @@ Client::Client(const string ip, const uint16_t port) noexcept
       sAddress{address::from_string(ip), port},
       mSocket{ioService}
 {
-    cout << "Creating client" << endl;
+    BOOST_LOG_TRIVIAL(trace) << "Creating the client class";
 }
 
 /* Default destructor */
 Client::~Client() noexcept
 {
+    BOOST_LOG_TRIVIAL(trace) << "Destructing the client class";
     disconnect_client();
 }
 
 bool Client::connect_client()
 {
-    cout << "Connecting" << endl;
+    BOOST_LOG_TRIVIAL(info) << "Connecting to the server address " + ip + ":" + to_string(port);
     try{
         boost::system::error_code err;
         mSocket.connect(sAddress, err);
         if(err){
-            cout << "Error code" << err.message() << endl;
+            BOOST_LOG_TRIVIAL(fatal) << "Failure to connect to server. Reason: " << err.message();
             return false;
         }
-    }catch(const std::exception &exception){
-        cout << "Exception: " << exception.what() << endl;
+    }catch(const std::exception &ex){
+        BOOST_LOG_TRIVIAL(fatal) << "Failure to connect to server. Exception: " << ex.what();
         return false;
     }
 
@@ -46,21 +47,27 @@ bool Client::connect_client()
 void Client::disconnect_client(){
     if(mSocket.is_open())
     {
+        BOOST_LOG_TRIVIAL(debug) << "Client connection terminated"; 
         mSocket.close();
+    }
+    else
+    {
+        BOOST_LOG_TRIVIAL(debug) << "Client was already disconnected";
     }
 }
 
 void Client::client_life()
 {
     if(!connect_client()){
-        cout << "Problem connecting to server" << endl;
+        BOOST_LOG_TRIVIAL(debug) << "Problem connecting to server. Client terminating";
         return;
     }
 
     // Send a request to the server
     string request = "Hello Server!";
+    BOOST_LOG_TRIVIAL(info) << "Sending to server: " << request;
     if(write(mSocket, buffer(request, request.size())) != request.size()){
-        cout << "The bytes weren't sent to the server" << endl;
+        BOOST_LOG_TRIVIAL(warning) << "None or not all data was sent to the server";
     }
 
     // Receive the response from the server
@@ -81,11 +88,12 @@ void Client::handle_response(const boost::system::error_code& ec,
                     shared_ptr<vector<char>> buffer)
 {
     if (!ec) {
-        cout << "Response received: ";
+        BOOST_LOG_TRIVIAL(info) << "Received from server: " << buffer;
+        /*cout << "Response received: ";
         cout.write(buffer->data(), bytes_transferred);
-        cout << endl;
+        cout << endl;*/
     } else {
-        cout << "Error: " << ec.message() << endl;
+        BOOST_LOG_TRIVIAL(info) << "Problem receiving data from server: " << ec.message();
     }
 }
 
