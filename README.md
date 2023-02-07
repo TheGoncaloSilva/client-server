@@ -35,6 +35,8 @@ sudo apt install build-essential cmake doxygen git libboost-all-dev
 
 In other Linux distributions you need equivalent packages installed.
 
+Boost version 1.74
+
 ## Cloning the repo
 
 In a directory of your choice, clone the project to your computer

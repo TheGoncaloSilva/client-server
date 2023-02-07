@@ -16,6 +16,7 @@ using namespace boost::asio::ip;
 Client::Client(const string ip, const uint16_t port) noexcept
     : ip{ip},
       port{port},
+      seeds{CLIENT},
       sAddress{address::from_string(ip), port},
       mSocket{ioService}
 {
@@ -69,13 +70,16 @@ void Client::client_life(uint8_t timerSeconds)
     // Async timer, to contact the server for informatiomn
     //deadline_timer timer(ioService, boost::posix_time::seconds(timerSeconds));
     //timer.async_wait(boost::bind(Client::contact_server, &mSocket));
+    contact_server();
+    /*
     while (1)
     {
-        contact_server();
+        
         this_thread::sleep_for(std::chrono::seconds(timerSeconds));
         // Start the event loop
-        ioService.run();
-    }
+        
+    }*/
+    ioService.run();
     
     
 }

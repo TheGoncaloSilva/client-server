@@ -10,7 +10,6 @@
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/exception/diagnostic_information.hpp>
-
 #include <boost/log/utility/setup/console.hpp>
 
 namespace logger

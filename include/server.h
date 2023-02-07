@@ -10,6 +10,7 @@
 
 // headers of local libraries
 #include "logging.h"
+#include "seeds.h"
 
 // Namespaces in use
 using namespace std;
@@ -26,6 +27,7 @@ class Server{
 
         const string ip;
         const uint16_t port;
+        Seeds seeds;
 
     private:
 

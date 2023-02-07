@@ -41,6 +41,7 @@ include_directories(
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared/communication.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../shared/logging.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../shared/seeds.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_server.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/server.cpp
 )

@@ -12,6 +12,7 @@
 
 // headers of local libraries
 #include "logging.h"
+#include "seeds.h"
 
 // Namespaces in use
 using namespace std;
@@ -30,7 +31,7 @@ class Client
 
         const string ip;
         const uint16_t port;
-
+        Seeds seeds;
     private:
         bool connect_client();
 

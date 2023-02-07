@@ -17,6 +17,7 @@ constexpr int PORT = 1001;
 Server::Server(const string ip, const uint16_t port) noexcept
     : ip{ip},
       port{port},
+      seeds{SERVER},
       sAddress{address::from_string(ip), port},
       acceptor(new ip::tcp::acceptor(ioService, sAddress)),
       socket(new ip::tcp::socket(ioService))
