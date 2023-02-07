@@ -104,7 +104,6 @@ void Client::handle_response(const boost::system::error_code& ec,
 {
     if (!ec) {
         BOOST_LOG_TRIVIAL(info) << "Received from server: " << buffer->data();
-        cout << "here" << endl;
     } else {
         BOOST_LOG_TRIVIAL(info) << "Problem receiving data from server: " << ec.message();
     }
