@@ -29,6 +29,7 @@ In other Linux distributions you need equivalent packages installed.
 The project file structure is organized in the following way
 
 * `bin:` Executable files (.out)
+* `bin/logs:` Log files of server and client
 * `build:` Build associated files
 * `docs:` Project documentation
 * `include:` Header files
@@ -68,6 +69,8 @@ The resulting executables will be located in the projects `bin` folder.
 To-do
 
 ## Testing the code
+
+To-do
 
 ## Possible improvements
 
