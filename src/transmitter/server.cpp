@@ -19,8 +19,8 @@ Server::Server(const string ip, const uint16_t port) noexcept
       port{port},
       seeds{SERVER},
       sAddress{address::from_string(ip), port},
-      acceptor(new ip::tcp::acceptor(ioService, sAddress)),
-      socket(new ip::tcp::socket(ioService))
+      acceptor(new ip::tcp::acceptor(ioContext, sAddress)),
+      socket(new ip::tcp::socket(ioContext))
 {
     BOOST_LOG_TRIVIAL(trace) << "Creating the server class";
 }
@@ -37,14 +37,14 @@ bool Server::create_server()
     BOOST_LOG_TRIVIAL(info) << "Setting up server with address " + ip + ":" + to_string(port);
     start_accept(acceptor, socket);
 
-    ioService.run();
+    ioContext.run();
     return true;
 }
 
 void Server::terminate_server()
 {
     BOOST_LOG_TRIVIAL(info) << "Terminating server";
-    ioService.stop();
+    ioContext.stop();
 }
 
 void Server::handle_request(const boost::system::error_code& ec, size_t bytes_transferred, shared_ptr<ip::tcp::socket> socket, shared_ptr<array<char, 1024>> buf)

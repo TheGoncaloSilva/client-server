@@ -18,7 +18,7 @@ Client::Client(const string ip, const uint16_t port) noexcept
       port{port},
       seeds{CLIENT},
       sAddress{address::from_string(ip), port},
-      mSocket{ioService}
+      mSocket(new ip::tcp::socket(ioContext))
 {
     BOOST_LOG_TRIVIAL(trace) << "Creating the client class";
 }
@@ -35,7 +35,7 @@ bool Client::connect_client()
     BOOST_LOG_TRIVIAL(info) << "Connecting to the server address " + ip + ":" + to_string(port);
     try{
         boost::system::error_code err;
-        mSocket.connect(sAddress, err);
+        mSocket->connect(sAddress, err);
         if(err){
             BOOST_LOG_TRIVIAL(fatal) << "Failure to connect to server. Reason: " << err.message();
             return false;
@@ -49,10 +49,10 @@ bool Client::connect_client()
 }
 
 void Client::disconnect_client(){
-    if(mSocket.is_open())
+    if(mSocket->is_open())
     {
         BOOST_LOG_TRIVIAL(debug) << "Client connection terminated"; 
-        mSocket.close();
+        mSocket->close();
     }
     else
     {
@@ -68,38 +68,56 @@ void Client::client_life(uint8_t timerSeconds)
     }
 
     // Async timer, to contact the server for informatiomn
-    //deadline_timer timer(ioService, boost::posix_time::seconds(timerSeconds));
+    //deadline_timer timer(ioContext, boost::posix_time::seconds(timerSeconds));
     //timer.async_wait(boost::bind(Client::contact_server, &mSocket));
-    contact_server();
-    /*
-    while (1)
+    
+    
+    /*while (1)
     {
         
         this_thread::sleep_for(std::chrono::seconds(timerSeconds));
+        contact_server();
         // Start the event loop
-        
+        ioContext.run();
     }*/
-    ioService.run();
     
-    
+    boost::asio::steady_timer timer(ioContext, boost::asio::chrono::seconds(timerSeconds));
+    timer.async_wait(boost::bind(Client::contact_server, 
+                            boost::asio::placeholders::error, 
+                            &timer, 
+                            mSocket,
+                            timerSeconds
+                        ));
+
+    ioContext.run();
 }
 
-void Client::contact_server(){
+void Client::contact_server(const boost::system::error_code&,
+                    boost::asio::steady_timer* timer, 
+                    shared_ptr<tcp::socket> mSocket, 
+                    uint8_t timerSeconds){
     // Send a request to the server
     string request = "Hello Server!";
     BOOST_LOG_TRIVIAL(info) << "Sending to server: " << request;
-    if(write(mSocket, buffer(request, request.size())) != request.size()){
+    if(write(*mSocket, buffer(request, request.size())) != request.size()){
         BOOST_LOG_TRIVIAL(warning) << "None or not all data was sent to the server";
     }
 
     // Receive the response from the server
-    auto buffer = make_shared<vector<char>>(1024);
-    mSocket.async_read_some(boost::asio::buffer(buffer->data(), buffer->size()),
-                            [buffer](const boost::system::error_code& ec,
+    auto buff = make_shared<vector<char>>(1024);
+    mSocket->async_read_some(boost::asio::buffer(buff->data(), buff->size()),
+                            [buff](const boost::system::error_code& ec,
                                     size_t bytes_transferred) {
-                                        handle_response(ec, bytes_transferred, buffer);
+                                        handle_response(ec, bytes_transferred, buff);
                                     }
                             );
+    //async_read(*mSocket, buffer(buff->data(), 17), boost::bind(handle_response, boost::placeholders::_1, boost::placeholders::_2, buff));
+    timer->expires_at(timer->expiry() + boost::asio::chrono::seconds(timerSeconds));
+    timer->async_wait(boost::bind(Client::contact_server, 
+                            boost::asio::placeholders::error, 
+                            timer, 
+                            mSocket,
+                            timerSeconds));
 }
 
 void Client::handle_response(const boost::system::error_code& ec,
