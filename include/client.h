@@ -18,6 +18,7 @@
 using namespace std;
 using namespace boost::asio;
 using namespace boost::asio::ip;
+using namespace boost::posix_time;
 
 class Client
 {
@@ -27,7 +28,7 @@ class Client
 
         ~Client() noexcept;
 
-        void client_life(uint8_t timerSeconds);
+        void client_life(uint16_t timerSeconds);
 
         const string ip;
         const uint16_t port;
@@ -37,15 +38,18 @@ class Client
 
         void disconnect_client();
 
-        void contact_server();
+        void static contact_server(const boost::system::error_code& ec,
+                    boost::asio::steady_timer* timer, 
+                    shared_ptr<tcp::socket> mSocket, 
+                    uint16_t timerSeconds);
 
         void static handle_response(const boost::system::error_code& ec,
                         size_t bytes_transferred,
                         shared_ptr<vector<char>> buffer);
-
-        io_service ioService;
+        
+        io_context ioContext;
         tcp::endpoint sAddress;
-        tcp::socket mSocket;
+        shared_ptr<tcp::socket> mSocket;
 
 
 

@@ -1,58 +1,78 @@
 # client-server
 
-bin -> executable files (.out)
+This project represents a Asynchronous protocol-based TCP client and server using C++ and [Boost::Asio](https://www.boost.org/doc/libs/1_74_0/doc/html/boost_asio.html). This App is used for seed Distribution, where the Client request the server for seeds and the server responds to the client.
 
-build -> build associated files
+## Cloning the repo
 
-docs -> documentation
+In a directory of your choice, clone the project to your computer
 
-include -> header files
-
-lib -> used libraries (run ldd)
-
-src -> source code files
-
-make
-
-include logs
-
-documentation (código de doc nos ficheiros .h)
-
-tests
-
-implement challenge based authentication (tricky here)
-
-experimentar sonarcloud
+```shell
+cd «directory-of-your-choice»
+git clone git@github.com:TheGoncaloSilva/client-server.git
+```
 
 ## Pre-requisites
 
 On Ubuntu you need the following packages installed:
 _build-essential_, _cmake_, _doxygen_, and _git_.
 
-```
+```shell
 sudo apt install build-essential cmake doxygen git libboost-all-dev
 ```
 
 In other Linux distributions you need equivalent packages installed.
 
-Boost version 1.74
+**Attention:**  This code was develelopped using Boost version 1.74.
 
-## Cloning the repo
+## File structure
 
-In a directory of your choice, clone the project to your computer
+The project file structure is organized in the following way
 
+* `bin:` Executable files (.out)
+* `build:` Build associated files
+* `docs:` Project documentation
+* `include:` Header files
+* `tests:` Project test files
+* `lib:` Used libraries (built using `ldd`)
+* `src:` Source code files
+
+## Compiling
+
+### Preparing the compilation environment
+
+From the command line navigate to the directory of the source code tree and create a build directory:
+
+```shell
+mkdir build
 ```
-cd «directory-of-your-choice»
-git clone git@github.com:TheGoncaloSilva/client-server.git
+
+Next, navigate to that build directory and run [`cmake`](https://cmake.org/cmake/help/latest/manual/cmake.1.html#manual:cmake(1)) to configure the project and generate a native build system
+
+```shell
+cd build
+cmake ..
 ```
 
-## Preparing the compilation environment
+### Compiling the code
 
-## Compiling the code
+Execute the call for the build system to actually compile/link the project:
+
+```shell
+cmake --build .
+```
+
+The resulting executables will be located in the projects `bin` folder.
 
 ## Generating documentation
 
+To-do
+
 ## Testing the code
+
+## Possible improvements
+
+* Challeng-based authentication
+* Try SonarCloud tool
 
 # Bibliography
 
@@ -66,4 +86,4 @@ Open Source code example [here](https://github.com/iamazeem/TcpClientServerApp)
 
 Logging guide available [here](https://www.sentinelone.com/blog/getting-started-quickly-cplusplus-logging/)
 
-Asynchronous timer [here](https://www.bogotobogo.com/cplusplus/Boost/boost_AsynchIO_asio_tcpip_socket_server_client_timer_A.php)
+Asynchronous timer [here](https://www.bogotobogo.com/cplusplus/Boost/boost_AsynchIO_asio_tcpip_socket_server_client_timer_A.php) and [here](https://www.boost.org/doc/libs/1_81_0/doc/html/boost_asio/tutorial/tuttimer3.html)
