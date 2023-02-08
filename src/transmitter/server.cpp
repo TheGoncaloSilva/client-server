@@ -51,17 +51,24 @@ void Server::handle_request(const boost::system::error_code& ec, size_t bytes_tr
 {
     if (!ec)
     {
-        BOOST_LOG_TRIVIAL(info) << "Received from client " << socket->remote_endpoint().address().to_string() << ": " << buf->data();
+        BOOST_LOG_TRIVIAL(info) << "Received from client: " << buf->data() << " | Size: " << bytes_transferred;
 
+        // Process and send a response to the client
         string response = "Hello from server";
         BOOST_LOG_TRIVIAL(info) << "Sending to client: " << response;
-        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){});
+        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){
+                if(ec){
+                    BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes to client, code: " << ec << "; Reason: " << ec.message();
+                }
+            });
+
+        // Receive a request from the client and bind the response function
         shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
         async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket, buf));
     }
     else
     {
-        BOOST_LOG_TRIVIAL(error) << "Problem receiving data from client " << socket->remote_endpoint().address().to_string()
+        BOOST_LOG_TRIVIAL(error) << "Problem receiving " << bytes_transferred << " bytes from client " << socket->remote_endpoint().address().to_string()
                                  << "; Reason: " << ec.value() << ", Message: " << ec.message();
     }
 }
@@ -72,6 +79,8 @@ void Server::start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip:
         if (!ec)
         {
             BOOST_LOG_TRIVIAL(info) << "Accepted client from " << socket->remote_endpoint().address().to_string() << endl;
+
+            // Receive a request from the client and bind the response function
             shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
             async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket, buf));
         }

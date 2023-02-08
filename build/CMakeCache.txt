@@ -26,9 +26,6 @@ Boost_LOG_SETUP_LIBRARY_RELEASE:STRING=/usr/lib/x86_64-linux-gnu/libboost_log_se
 
 Boost_PROGRAM_OPTIONS_LIBRARY_RELEASE:STRING=/usr/lib/x86_64-linux-gnu/libboost_program_options.so.1.74.0
 
-//Boost system library (debug)
-Boost_SYSTEM_LIBRARY_DEBUG:FILEPATH=Boost_SYSTEM_LIBRARY_DEBUG-NOTFOUND
-
 Boost_SYSTEM_LIBRARY_RELEASE:STRING=/usr/lib/x86_64-linux-gnu/libboost_system.so.1.74.0
 
 //Path to a program.
@@ -281,15 +278,6 @@ boost_system_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_system-1.74.0
 boost_thread_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/boost_thread-1.74.0
 
 //Value Computed by CMake
-client-server_BINARY_DIR:STATIC=/home/goncalo/repos/bic/client-server/build/src/receiver
-
-//Value Computed by CMake
-client-server_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-client-server_SOURCE_DIR:STATIC=/home/goncalo/repos/bic/client-server/src/receiver
-
-//Value Computed by CMake
 client_BINARY_DIR:STATIC=/home/goncalo/repos/bic/client-server/build/src/receiver
 
 //Value Computed by CMake
@@ -314,10 +302,6 @@ server_SOURCE_DIR:STATIC=/home/goncalo/repos/bic/client-server/src/transmitter
 
 //ADVANCED property for variable: Boost_DIR
 Boost_DIR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: Boost_SYSTEM_LIBRARY_DEBUG
-Boost_SYSTEM_LIBRARY_DEBUG-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: Boost_SYSTEM_LIBRARY_RELEASE
-Boost_SYSTEM_LIBRARY_RELEASE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ADDR2LINE
 CMAKE_ADDR2LINE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR

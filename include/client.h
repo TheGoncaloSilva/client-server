@@ -28,7 +28,7 @@ class Client
 
         ~Client() noexcept;
 
-        void client_life(uint8_t timerSeconds);
+        void client_life(uint16_t timerSeconds);
 
         const string ip;
         const uint16_t port;
@@ -38,10 +38,10 @@ class Client
 
         void disconnect_client();
 
-        void static contact_server(const boost::system::error_code&,
+        void static contact_server(const boost::system::error_code& ec,
                     boost::asio::steady_timer* timer, 
                     shared_ptr<tcp::socket> mSocket, 
-                    uint8_t timerSeconds);
+                    uint16_t timerSeconds);
 
         void static handle_response(const boost::system::error_code& ec,
                         size_t bytes_transferred,
