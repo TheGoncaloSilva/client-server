@@ -5,6 +5,7 @@
 
 // header of standard or provided libraries
 #include <stdint.h>
+#include <cstdint>
 
 enum Entity
 {

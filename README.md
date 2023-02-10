@@ -17,12 +17,12 @@ On Ubuntu you need the following packages installed:
 _build-essential_, _cmake_, _doxygen_, and _git_.
 
 ```shell
-sudo apt install build-essential cmake doxygen git libboost-all-dev
+sudo apt install build-essential cmake doxygen git libboost-all-dev libgtest-dev
 ```
 
 In other Linux distributions you need equivalent packages installed.
 
-**Attention:**  This code was develelopped using Boost version 1.74.
+**Attention:**  This code was develelopped using Boost version 1.74 and tests with google test version 1.11.0
 
 ## File structure
 
@@ -76,6 +76,7 @@ To-do
 
 * Challeng-based authentication
 * Try SonarCloud tool
+* Use tools such as Conan to easily manage third-party packages
 
 # Bibliography
 
@@ -90,3 +91,5 @@ Open Source code example [here](https://github.com/iamazeem/TcpClientServerApp)
 Logging guide available [here](https://www.sentinelone.com/blog/getting-started-quickly-cplusplus-logging/)
 
 Asynchronous timer [here](https://www.bogotobogo.com/cplusplus/Boost/boost_AsynchIO_asio_tcpip_socket_server_client_timer_A.php) and [here](https://www.boost.org/doc/libs/1_81_0/doc/html/boost_asio/tutorial/tuttimer3.html)
+
+Google Test guide [here](https://matgomes.com/integrate-google-test-into-cmake/)
