@@ -46,7 +46,7 @@ set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/client.cpp
 )
 
-# Add the server executable
+# Add the client executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Find Boost library

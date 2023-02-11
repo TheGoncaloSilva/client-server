@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
-//#include "seeds.h"
-#include "../include/seeds.h"
+#include "seeds.h"
+//#include "../include/seeds.h"
 
 TEST(Seeds, TestClassCreation)
 {
-    auto s = Seeds(CLIENT);
+    Seeds s{CLIENT};
     EXPECT_EQ(s.handler, CLIENT);
 }

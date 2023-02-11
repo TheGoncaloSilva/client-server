@@ -1,30 +1,40 @@
 
 project(ClientServer_tests)
 
-# Get google test
-include(FetchContent)
+enable_testing()
 
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.11.0
+# Get Google test
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../bin/tests)
+
+# Set up include directories
+include_directories(${Boost_INCLUDE_DIRS})
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/shared
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/client
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/server
+	${CMAKE_CURRENT_SOURCE_DIR}/../include
 )
-FetchContent_MakeAvailable(googletest)
-add_library(GTest::GTest INTERFACE IMPORTED)
-target_link_libraries(GTest::GTest INTERFACE gtest_main)
-
-include_directories(${PROJECT_ROOT_DIR}/client-server/include)
 
 set(SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/seeds_test.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/../src/shared/seeds.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/seeds_test.cpp
     )
 
 add_library(tests STATIC
         seeds_test.cpp
     )   
 
-add_executable(seeds_test ${CMAKE_CURRENT_SOURCE_DIR}/seeds_test.cpp)
-target_link_libraries(seeds_test gtest ../include/seeds)
+# Add the client executable
+add_executable(test_seeds ${SOURCES})
+# Add the server executable
+#add_executable(${PROJECT_NAME} seeds_test.cpp)
+
+target_link_libraries(test_seeds ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} )
 
 #target_link_libraries(seeds_test
 #        PRIVATE
@@ -32,5 +42,5 @@ target_link_libraries(seeds_test gtest ../include/seeds)
 #            seeds
 #    )
 
-add_test(seeds_test seeds_test)
+add_test(test_seeds test_seeds)
 
