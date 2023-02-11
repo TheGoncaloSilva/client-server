@@ -70,7 +70,12 @@ To-do
 
 ## Testing the code
 
-To-do
+The tests were constructed using the [Ctest](https://cmake.org/cmake/help/book/mastering-cmake/chapter/Testing%20With%20CMake%20and%20CTest.html) and [Google Test](https://google.github.io/googletest/) tools. To run them, you first need to compile the project, using the steps above. After that, from the project directory, execute the following commands:
+
+```shell
+cd bin/tests
+./<test_to_run>
+```
 
 ## Possible improvements
 

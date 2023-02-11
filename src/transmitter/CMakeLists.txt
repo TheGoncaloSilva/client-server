@@ -56,5 +56,3 @@ find_package(Boost REQUIRED COMPONENTS system)
 # Link the Boost libraries to the server executable
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} -Wl,--start-group  ${PROJECT_LIB} -Wl,--end-group)
-
-enable_testing()

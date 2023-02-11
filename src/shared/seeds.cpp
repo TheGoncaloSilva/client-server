@@ -13,7 +13,7 @@ Seeds::Seeds(Entity hdlr) noexcept
 }
 
 void Seeds::refresh_seeds(){
-    assert(handler == SERVER); // The client cannot generate seeds
+    assert(handler == SERVER && "Only the Server should reset seeds"); // The client cannot generate seeds
     
     set_seed_mux(generate_random(seedMuxSize));
     set_seed_pe(generate_random(seedPeSize));
@@ -41,10 +41,12 @@ uint64_t Seeds::generate_random(uint32_t bitSize)
 
 void Seeds::set_seed_pe(uint64_t newSeed)
 {
+    assert(newSeed >= 0 && newSeed <= seedPeSize && "Value should be within bit size");
     seedPe = newSeed;
 }
 
 void Seeds::set_seed_mux(uint64_t newSeed)
 {
+    assert(newSeed >= 0 && newSeed <= seedMuxSize && "Value should be within bit size");
     seedMux = newSeed;
 }
