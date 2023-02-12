@@ -8,19 +8,20 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <memory>
 #include <boost/asio.hpp>
 
+using namespace std;
+using namespace boost::asio;
 using namespace boost::asio::ip;
 
 class Communication{
     public:
-        std::vector<char>& receive_data(tcp::socket socket);
+        static shared_ptr<std::vector<char>> receive_data(shared_ptr<tcp::socket> socket);
 
-        void send_data(tcp::socket socket, std::vector<char> &data);
+        void static send_data(shared_ptr<tcp::socket> socket, string data);
 
 
     private:
         static const uint16_t headerSize = 4;    // in Bytes
-
-        void read_bytes(std::vector<char> &buff);
 };

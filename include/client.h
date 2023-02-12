@@ -13,6 +13,7 @@
 // headers of local libraries
 #include "logging.h"
 #include "seeds.h"
+#include "communication.h"
 
 // Namespaces in use
 using namespace std;
