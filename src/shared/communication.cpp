@@ -3,64 +3,21 @@
 #include "communication.h"
 #include "logging.h"
 
-shared_ptr<std::vector<char>> Communication::receive_data(shared_ptr<tcp::socket> socket)
-{
-    size_t val;
-
-    // Read Header
-    async_read(*socket, buffer(&val, headerSize), [](const boost::system::error_code& ec, size_t bytes_transferred){
-            if(ec){
-                BOOST_LOG_TRIVIAL(info) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
-                BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
-            }
-    });
-
-    auto data = make_shared<vector<char>>(val);
-
-    // Read body
-    async_read(*socket, buffer(data->data(), data->size()), [](const boost::system::error_code& ec, size_t bytes_transferred){
-            if(ec){
-                BOOST_LOG_TRIVIAL(info) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
-                BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
-            }
-    });
-
-    BOOST_LOG_TRIVIAL(info) << "Received data -> Size: " << data->size() << " | " << data->data();
-
-    return data;
-}
-
-void Communication::send_data(shared_ptr<tcp::socket> socket, string data)
-{
-    BOOST_LOG_TRIVIAL(info) << "Sending data -> Size: " << data.size() << " | " << data.data();
-    size_t val = data.size();
-
-    // Write Header
-    async_write(*socket, buffer(&val, headerSize), [](const boost::system::error_code& ec, size_t bytes_transferred){
-            if(ec){
-                BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
-                BOOST_THROW_EXCEPTION(runtime_error("Failure Sending data"));
-            }
-    });
-
-    // Write body
-    async_write(*socket, buffer(data.data(), data.size()), [](const boost::system::error_code& ec, size_t bytes_transferred){
-            if(ec){
-                BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
-                BOOST_THROW_EXCEPTION(runtime_error("Failure Sending data"));
-            }
-    });
-}
-
-
-
-
+/* CLIENT */
 shared_ptr<vector<char>> Communication::do_read_async(shared_ptr<tcp::socket> socket)
-{
-    // Receive a request from the client and bind the response function
-    auto buff = make_shared<vector<char>>(1024);
+{   
+    // Get Header
+    int32_t val = 0;
+    async_read(*socket, buffer(&val, sizeof(val)), [](const boost::system::error_code& ec, size_t bytes_transferred){
+            if(ec){
+                BOOST_LOG_TRIVIAL(error) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
+                BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
+            }
+    });
+
+    auto buff = make_shared<vector<char>>(val);
     // Read body
-    async_read(*socket, buffer(buff->data(), 17), [buff](const boost::system::error_code& ec, size_t bytes_transferred){
+    async_read(*socket, buffer(buff->data(), val), [buff](const boost::system::error_code& ec, size_t bytes_transferred){
             if(ec){
                 BOOST_LOG_TRIVIAL(error) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
                 BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
@@ -70,25 +27,44 @@ shared_ptr<vector<char>> Communication::do_read_async(shared_ptr<tcp::socket> so
     return buff;
 }
 
+/* CLIENT */
 void Communication::do_write_async(shared_ptr<tcp::socket> socket, string data)
-{
-    // Process and send a response to the client
+{   
+    // Send message header
+    int32_t val = data.size();
+    async_write(*socket, buffer(&val, sizeof(val)), [val](const boost::system::error_code& ec, size_t bytes_transferred){
+            if(!ec){
+                BOOST_LOG_TRIVIAL(info) << "Sent to Server: " << val;
+            }else{
+                BOOST_LOG_TRIVIAL(error) << "Failure sending " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
+            }
+    });
+
+    // Send message body
     async_write(*socket, buffer(data), [data](const boost::system::error_code& ec, size_t bytes_transferred){
             if(!ec){
                 BOOST_LOG_TRIVIAL(info) << "Sent to Server: " << data;
             }else{
-                BOOST_LOG_TRIVIAL(error) << "Failure sending " << bytes_transferred << " bytes to server, code: " << ec << "; Reason: " << ec.message();
+                BOOST_LOG_TRIVIAL(error) << "Failure sending " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
             }
     });
 } 
 
+/* SERVER */
 shared_ptr<vector<char>> Communication::do_read_sync(shared_ptr<ip::tcp::socket> socket)
 {
+    // Get Header
+    int32_t val = 0;
+    if(read(*socket, buffer(&val, sizeof(val))) <= 0){
+        BOOST_LOG_TRIVIAL(error) << "Failure Receiving data";
+        BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
+    }
+
     // Receive a request from the client and bind the response function
-    auto buff = make_shared<vector<char>>(1024);
+    auto buff = make_shared<vector<char>>(val);
     // Read body
-    if(read(*socket, buffer(buff->data(), 13)) <= 0){
-        BOOST_LOG_TRIVIAL(error) << "Failure Receiving data from client";
+    if(read(*socket, buffer(buff->data(), val)) <= 0){
+        BOOST_LOG_TRIVIAL(error) << "Failure Receiving data";
         BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
     }
     
@@ -105,11 +81,20 @@ shared_ptr<vector<char>> Communication::do_read_sync(shared_ptr<ip::tcp::socket>
     return buff;
 }
 
+/* SERVER */
 void Communication::do_write_sync(shared_ptr<ip::tcp::socket> socket, string data)
-{
+{   
+    // Send message header
+    int32_t val = data.size();
     // Process and send a response to the client
-    if(write(*socket, buffer(data)) != data.size()){
-        BOOST_LOG_TRIVIAL(error) << "Failure sending data to client";
+    if(write(*socket, buffer(&val, sizeof(val))) <= 0){
+        BOOST_LOG_TRIVIAL(error) << "Failure sending header";
+        BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
+    }
+
+    // Process and send a response to the client
+    if(write(*socket, buffer(data, data.size())) != data.size()){
+        BOOST_LOG_TRIVIAL(error) << "Failure sending data";
         BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
     }
 

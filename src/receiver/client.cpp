@@ -87,9 +87,10 @@ void Client::contact_server(const boost::system::error_code& ec,
 
         // Send a request to the server
         string request = "Hello Server!";
-        Communication::do_write_async(mSocket, request);
+        BOOST_LOG_TRIVIAL(info) << "Sending to server: " << request << " | Size: " << request.size();
+        Communication::do_write_sync(mSocket, request);
 
-        auto data = Communication::do_read_async(mSocket);
+        auto data = Communication::do_read_sync(mSocket);
         BOOST_LOG_TRIVIAL(info) << "Received from server: " << data->data() << " | Size: " << data->size();
 
         // Set up timers for continuation of client calls
