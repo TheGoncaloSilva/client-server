@@ -87,22 +87,10 @@ void Client::contact_server(const boost::system::error_code& ec,
 
         // Send a request to the server
         string request = "Hello Server!";
-        BOOST_LOG_TRIVIAL(info) << "Sending to server: " << request;
-        async_write(*mSocket, buffer(request, request.size()), [](const boost::system::error_code& ec, size_t bytes_transferred){
-                if(ec){
-                    BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes to server, code: " << ec << "; Reason: " << ec.message();
-                }
-            });
+        Communication::do_write_async(mSocket, request);
 
-        // Receive the response from the server
-        auto buff = make_shared<vector<char>>(1024);
-        /*mSocket->async_read_some(boost::asio::buffer(buff->data(), buff->size()),
-                                [buff](const boost::system::error_code& ec,
-                                        size_t bytes_transferred) {
-                                            handle_response(ec, bytes_transferred, buff);
-                                        }
-                                );*/
-        async_read(*mSocket, buffer(buff->data(), 17), boost::bind(handle_response, boost::placeholders::_1, boost::placeholders::_2, buff));
+        auto data = Communication::do_read_async(mSocket);
+        BOOST_LOG_TRIVIAL(info) << "Received from server: " << data->data() << " | Size: " << data->size();
 
         // Set up timers for continuation of client calls
         timer->expires_at(timer->expiry() + boost::asio::chrono::seconds(timerSeconds));
@@ -112,18 +100,6 @@ void Client::contact_server(const boost::system::error_code& ec,
                                 mSocket,
                                 timerSeconds));
     }else{
-        BOOST_LOG_TRIVIAL(info) << "Failure contacting server, code: " << ec << "; Reason: " << ec.message();
+        BOOST_LOG_TRIVIAL(error) << "Failure contacting server, code: " << ec << "; Reason: " << ec.message();
     }
 }
-
-void Client::handle_response(const boost::system::error_code& ec,
-                    size_t bytes_transferred,
-                    shared_ptr<vector<char>> buffer)
-{
-    if (!ec) {
-        BOOST_LOG_TRIVIAL(info) << "Received from server: " << buffer->data() << " | Size: " << bytes_transferred;
-    } else {
-        BOOST_LOG_TRIVIAL(info) << "Problem receiving data from server: " << ec.message();
-    }
-}
-

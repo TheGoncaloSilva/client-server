@@ -54,7 +54,8 @@ void Server::start_accept()
         if (!ec)
         {
             BOOST_LOG_TRIVIAL(info) << "Accepted client from " << socket->remote_endpoint().address().to_string() << endl;
-            do_read();
+            handle_session(socket);
+            //do_read(socket);
         }
         else
         {
@@ -63,32 +64,22 @@ void Server::start_accept()
     });
 }
 
-void Server::do_read()
+void Server::handle_session(shared_ptr<ip::tcp::socket> socket)
 {
-    // Receive a request from the client and bind the response function
-    shared_ptr<array<char, 1024>> buff(new array<char, 1024>);
-    // Read body
-    async_read(*socket, buffer(buff->data(), 13), [buff, this](const boost::system::error_code& ec, size_t bytes_transferred){
-            if(!ec){
-                BOOST_LOG_TRIVIAL(info) << "Received from client: " << buff->data() << " | Size: " << bytes_transferred;
-                do_write();
-            }else{
-                BOOST_LOG_TRIVIAL(info) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
-                BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
-            }
-    });
-}
+    // Read
+    auto buff = Communication::do_read_sync(socket);
 
-void Server::do_write()
-{
-    // Process and send a response to the client
+    BOOST_LOG_TRIVIAL(info) << "Received from client: " << buff->data() << " | Size: " << buff->size();
+
+    // Process
     string response = "Hello from server";
-    async_write(*socket, buffer(response), [response, this](const boost::system::error_code& ec, size_t bytes_transferred){
-            if(!ec){
-                BOOST_LOG_TRIVIAL(info) << "Sent to client: " << response;
-                do_read();
-            }else{
-                BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes to client, code: " << ec << "; Reason: " << ec.message();
-            }
-    });
-} 
+
+    // Write
+    //comms.send_data();
+    Communication::do_write_sync(socket, response);
+    
+    BOOST_LOG_TRIVIAL(info) << "Sent to client: " << response;
+
+    // Recursive call
+    handle_session(socket);
+}

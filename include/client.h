@@ -43,10 +43,6 @@ class Client
                     boost::asio::steady_timer* timer, 
                     shared_ptr<tcp::socket> mSocket, 
                     uint16_t timerSeconds);
-
-        void static handle_response(const boost::system::error_code& ec,
-                        size_t bytes_transferred,
-                        shared_ptr<vector<char>> buffer);
         
         io_context ioContext;
         tcp::endpoint sAddress;

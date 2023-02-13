@@ -11,6 +11,7 @@
 // headers of local libraries
 #include "logging.h"
 #include "seeds.h"
+#include "communication.h"
 
 // Namespaces in use
 using namespace std;
@@ -33,9 +34,7 @@ class Server{
 
         void start_accept();
 
-        void do_read();
-        void do_write();
-
+        void static handle_session(shared_ptr<ip::tcp::socket> socket);
 
         io_context ioContext;
         ip::tcp::endpoint sAddress;
