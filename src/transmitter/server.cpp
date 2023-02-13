@@ -13,6 +13,7 @@ using namespace boost::asio::ip;
 // Macros declarations
 constexpr int PORT = 1001; 
 
+
 /* Default constructor*/
 Server::Server(const string ip, const uint16_t port) noexcept
     : ip{ip},
@@ -35,7 +36,7 @@ Server::~Server() noexcept
 bool Server::create_server()
 {
     BOOST_LOG_TRIVIAL(info) << "Setting up server with address " + ip + ":" + to_string(port);
-    start_accept(acceptor, socket);
+    start_accept();
 
     ioContext.run();
     return true;
@@ -47,42 +48,13 @@ void Server::terminate_server()
     ioContext.stop();
 }
 
-void Server::handle_request(const boost::system::error_code& ec, size_t bytes_transferred, shared_ptr<ip::tcp::socket> socket, shared_ptr<array<char, 1024>> buf)
+void Server::start_accept()
 {
-    if (!ec)
-    {
-        BOOST_LOG_TRIVIAL(info) << "Received from client: " << buf->data() << " | Size: " << bytes_transferred;
-
-        // Process and send a response to the client
-        string response = "Hello from server";
-        BOOST_LOG_TRIVIAL(info) << "Sending to client: " << response;
-        async_write(*socket, buffer(response), [](const boost::system::error_code& ec, size_t bytes_transferred){
-                if(ec){
-                    BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes to client, code: " << ec << "; Reason: " << ec.message();
-                }
-            });
-
-        // Receive a request from the client and bind the response function
-        shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
-        async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket, buf));
-    }
-    else
-    {
-        BOOST_LOG_TRIVIAL(error) << "Problem receiving " << bytes_transferred << " bytes from client " << socket->remote_endpoint().address().to_string()
-                                 << "; Reason: " << ec.value() << ", Message: " << ec.message();
-    }
-}
-
-void Server::start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip::tcp::socket> socket)
-{
-    acceptor->async_accept(*socket, [acceptor, socket](const boost::system::error_code& ec){
+    acceptor->async_accept(*socket, [this](const boost::system::error_code& ec){
         if (!ec)
         {
             BOOST_LOG_TRIVIAL(info) << "Accepted client from " << socket->remote_endpoint().address().to_string() << endl;
-
-            // Receive a request from the client and bind the response function
-            shared_ptr<array<char, 1024>> buf(new array<char, 1024>);
-            async_read(*socket, buffer(buf->data(), 13), boost::bind(handle_request, boost::placeholders::_1, boost::placeholders::_2, socket, buf));
+            do_read();
         }
         else
         {
@@ -90,3 +62,33 @@ void Server::start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip:
         }
     });
 }
+
+void Server::do_read()
+{
+    // Receive a request from the client and bind the response function
+    shared_ptr<array<char, 1024>> buff(new array<char, 1024>);
+    // Read body
+    async_read(*socket, buffer(buff->data(), 13), [buff, this](const boost::system::error_code& ec, size_t bytes_transferred){
+            if(!ec){
+                BOOST_LOG_TRIVIAL(info) << "Received from client: " << buff->data() << " | Size: " << bytes_transferred;
+                do_write();
+            }else{
+                BOOST_LOG_TRIVIAL(info) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
+                BOOST_THROW_EXCEPTION(runtime_error("Failure Receiving data"));
+            }
+    });
+}
+
+void Server::do_write()
+{
+    // Process and send a response to the client
+    string response = "Hello from server";
+    async_write(*socket, buffer(response), [response, this](const boost::system::error_code& ec, size_t bytes_transferred){
+            if(!ec){
+                BOOST_LOG_TRIVIAL(info) << "Sent to client: " << response;
+                do_read();
+            }else{
+                BOOST_LOG_TRIVIAL(info) << "Failure sending " << bytes_transferred << " bytes to client, code: " << ec << "; Reason: " << ec.message();
+            }
+    });
+} 

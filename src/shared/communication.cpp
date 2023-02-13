@@ -7,7 +7,7 @@ shared_ptr<std::vector<char>> Communication::receive_data(shared_ptr<tcp::socket
 {
     size_t val;
 
-    // Write Header
+    // Read Header
     async_read(*socket, buffer(&val, headerSize), [](const boost::system::error_code& ec, size_t bytes_transferred){
             if(ec){
                 BOOST_LOG_TRIVIAL(info) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();
@@ -17,7 +17,7 @@ shared_ptr<std::vector<char>> Communication::receive_data(shared_ptr<tcp::socket
 
     auto data = make_shared<vector<char>>(val);
 
-    // Write body
+    // Read body
     async_read(*socket, buffer(data->data(), data->size()), [](const boost::system::error_code& ec, size_t bytes_transferred){
             if(ec){
                 BOOST_LOG_TRIVIAL(info) << "Failure Receiving " << bytes_transferred << " bytes, code: " << ec << "; Reason: " << ec.message();

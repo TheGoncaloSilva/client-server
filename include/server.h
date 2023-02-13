@@ -11,7 +11,6 @@
 // headers of local libraries
 #include "logging.h"
 #include "seeds.h"
-#include "communication.h"
 
 // Namespaces in use
 using namespace std;
@@ -32,12 +31,11 @@ class Server{
 
     private:
 
-        void static handle_request(const boost::system::error_code& ec, 
-                        size_t bytes_transferred,
-                        shared_ptr<ip::tcp::socket> socket,
-                        shared_ptr<array<char, 1024>> buf);
+        void start_accept();
 
-        void static start_accept(shared_ptr<ip::tcp::acceptor> acceptor, shared_ptr<ip::tcp::socket> socket);
+        void do_read();
+        void do_write();
+
 
         io_context ioContext;
         ip::tcp::endpoint sAddress;
