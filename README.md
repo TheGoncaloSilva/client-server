@@ -22,7 +22,7 @@ sudo apt install build-essential cmake doxygen git libboost-all-dev libgtest-dev
 
 In other Linux distributions you need equivalent packages installed.
 
-**Attention:**  This code was develelopped using Boost version 1.74 and tests with google test version 1.11.0
+**Attention:**  This code was developped using Boost version 1.74 and tests with google test version 1.11.0
 
 ## File structure
 
